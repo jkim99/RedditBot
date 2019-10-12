@@ -1,1 +1,7 @@
 creds.py
+*.txt
+*.png
+*.jpg
+*.gif
+*.jpeg
+__pycache__
