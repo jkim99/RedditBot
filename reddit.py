@@ -14,6 +14,13 @@ class REDDIT():
             user_agent=r.user_agent
         )
 
+    def getImages(self, sub, number):
+        retArray = []
+        for submission in reddit.subreddit('sub').hot(limit=number):
+            retArray.append(submission)
+        return retArray
 
 if __name__ == '__main__':
     redd = REDDIT()
+
+    
