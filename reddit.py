@@ -14,6 +14,16 @@ class REDDIT():
             user_agent=r.user_agent
         )
 
+    def start_loop(self):
+        while True:
+            command = input(">")
+            self.process_command(command)
+
+    def process_command(self, cmd):
+        cmd_parts = cmd.split(' ')
+        if cmd_parts[0] == 'img':
+            self.get_images(cmd)
+
 
 if __name__ == '__main__':
     redd = REDDIT()
