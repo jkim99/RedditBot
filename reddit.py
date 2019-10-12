@@ -3,6 +3,7 @@ import creds as r
 import requests
 import os
 
+
 class REDDIT():
     """
     """
@@ -37,16 +38,16 @@ class REDDIT():
     def process_command(self, cmd):
         cmd_parts = cmd.split(' ')
         if cmd_parts[0] == 'img':
-            self.get_images(cmd)
+            self.download_images(cmd)
 
-    def get_images(self, sub, number=1):
+    def get_image_urls(self, sub, number=1):
         retArray = []
         for submission in self.reddit.subreddit(sub).hot(limit=number):
             retArray.append(submission.url)
         return retArray
 
     def download_images(self, sub, number=1):
-        urls = self.get_images(sub, number)
+        urls = self.get_image_urls(sub, number)
         extension = '0'
         image_files = []
         for url in urls:
@@ -67,9 +68,9 @@ class REDDIT():
                     file_name = url[url.rfind('/') + 1:] + extension
 
                     if image.status_code == 200:
-                        with open(file_name, mode='wb') as meme_file:
+                        with open('images/' + file_name, mode='wb') as meme_file:
                             meme_file.write(image.content)
-                            self.__add_visited__(url)
+                        self.__add_visited__(url)
                         print(f"Images found and saved as {file_name} [{len(image_files)}]")
                         image_files.append(file_name)
 
@@ -80,10 +81,20 @@ class REDDIT():
     def image_keep(self, image_files):
         x = 0
         for image in image_files:
-            number = input('Keep file [' + str(x) + '](y/n)?')
-            if number == 'n':
+            answer = input('Keep file [' + str(x) + '] (y/ya/n/na)?')
+            if answer == 'n':
                 os.remove(image)
-            x += 1
+                x += 1
+            elif answer == 'ya':
+                return
+            elif answer == 'na':
+                for image in image_files:
+                    os.remove('images/' + image)
+                return
+            elif answer == 'y':
+                x += 1
+            else:
+                print('Invalid response (y/ya/n/na)')
 
 
 if __name__ == '__main__':
