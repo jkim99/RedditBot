@@ -14,7 +14,7 @@ class REDDIT():
             password=r.password,
             user_agent=r.user_agent
         )
-        self.visited_post = []
+        self.visited_posts = []
 
     def __load_visited__(self):
         v = []
@@ -76,13 +76,14 @@ class REDDIT():
 
         self.image_keep(image_files)
 
-    def image_keep(self, number, image_files):
+    def image_keep(self, image_files):
         x = 0
         for image in image_files:
-            number = input('Keep file [' + x + '](y/n)?')
+            number = input('Keep file [' + str(x) + '](y/n)?')
             if number == 'n':
                 os.remove(image)
-            
+            x += 1
+
 
 
 if __name__ == '__main__':
