@@ -1,7 +1,7 @@
 import praw
 import creds as r
 import requests
-
+import os
 
 class REDDIT():
     """
@@ -14,7 +14,7 @@ class REDDIT():
             password=r.password,
             user_agent=r.user_agent
         )
-        self.visited_post = []
+        self.visited_posts = []
 
     def __load_visited__(self):
         v = []
@@ -48,6 +48,7 @@ class REDDIT():
     def download_images(self, sub, number=1):
         urls = self.get_images(sub, number)
         extension = '0'
+        image_files = []
         for url in urls:
             if url not in self.visited_posts:
                 # Filter image file types
@@ -69,11 +70,22 @@ class REDDIT():
                         with open(file_name, mode='wb') as meme_file:
                             meme_file.write(image.content)
                             self.__add_visited__(url)
-                        print(f"Images found and saved as {file_name}")
+                        print(f"Images found and saved as {file_name} [{len(image_files)}]")
+                        image_files.append(file_name)
 
                 extension = '0'
+
+        self.image_keep(image_files)
+
+    def image_keep(self, image_files):
+        x = 0
+        for image in image_files:
+            number = input('Keep file [' + str(x) + '](y/n)?')
+            if number == 'n':
+                os.remove(image)
+            x += 1
 
 
 if __name__ == '__main__':
     redd = REDDIT()
-    redd.download_images('programmerhumor', 3)
+    redd.download_images('programmerhumor', 10)
