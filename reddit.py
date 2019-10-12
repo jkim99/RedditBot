@@ -49,28 +49,29 @@ class REDDIT():
         urls = self.get_images(sub, number)
         extension = '0'
         for url in urls:
-            # Filter image file types
-            if '.png' in url:
-                extension = '.png'
-            elif '.jpg' in url or '.jpeg' in url:
-                extension = '.jpeg'
-            elif 'imgur' in url:
-                url += 'jpeg'
-                extension = '.jpeg'
-            else:
-                print("No image found on this url")
+            if url not in self.visited_posts:
+                # Filter image file types
+                if '.png' in url:
+                    extension = '.png'
+                elif '.jpg' in url or '.jpeg' in url:
+                    extension = '.jpeg'
+                elif 'imgur' in url:
+                    url += 'jpeg'
+                    extension = '.jpeg'
+                else:
+                    print("No image found on this url")
 
-            if extension != '0':
-                image = requests.get(url, allow_redirects=False)
-                file_name = url[url.rfind('/') + 1:] + extension
+                if extension != '0':
+                    image = requests.get(url, allow_redirects=False)
+                    file_name = url[url.rfind('/') + 1:] + extension
 
-                if image.status_code == 200:
-                    with open(file_name, mode='wb') as meme_file:
-                        meme_file.write(image.content)
-                        self.__add_visited__()
-                    print(f"Images found and saved as {file_name}")
+                    if image.status_code == 200:
+                        with open(file_name, mode='wb') as meme_file:
+                            meme_file.write(image.content)
+                            self.__add_visited__(url)
+                        print(f"Images found and saved as {file_name}")
 
-            extension = '0'
+                extension = '0'
 
 
 if __name__ == '__main__':
