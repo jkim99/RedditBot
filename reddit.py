@@ -33,25 +33,27 @@ class REDDIT():
     def start_loop(self):
         while True:
             command = input(">")
-            self.process_command(command)
+            self.__process_command__(command)
 
-    def process_command(self, cmd):
-        cmd_parts = cmd.split(' ')
-        if cmd_parts[0] == 'img':
-            self.download_images(cmd)
+    def __process_command__(self, cmd):
+        command = cmd.split(' ')
+        func = command.pop(0)
+        getattr(self, func)(*command)
 
-    def get_image_urls(self, sub, number=1):
-        retArray = []
+    def __get_image_urls__(self, sub, number=1):
+        ret_array = []
         for submission in self.reddit.subreddit(sub).hot(limit=number):
-            retArray.append(submission.url)
-        return retArray
+            ret_array.append(submission.url)
+        return ret_array
 
-    def download_images(self, sub, number=1):
-        urls = self.get_image_urls(sub, number)
+    def dlimg(self, sub, number=1):
+        urls = self.__get_image_urls__(sub, int(number))
         extension = '0'
         image_files = []
         for url in urls:
-            if url not in self.visited_posts:
+            if url in self.visited_posts:
+                pass
+            else:
                 # Filter image file types
                 if '.png' in url:
                     extension = '.png'
@@ -76,9 +78,9 @@ class REDDIT():
 
                 extension = '0'
 
-        self.image_keep(image_files)
+        self.__image_keep__(image_files)
 
-    def image_keep(self, image_files):
+    def __image_keep__(self, image_files):
         x = 0
         for image in image_files:
             answer = input('Keep file [' + str(x) + '] (y/ya/n/na)?')
@@ -96,7 +98,10 @@ class REDDIT():
             else:
                 print('Invalid response (y/ya/n/na)')
 
+    def exit(self):
+        quit()
+
 
 if __name__ == '__main__':
     redd = REDDIT()
-    redd.download_images('programmerhumor', 10)
+    redd.start_loop()
