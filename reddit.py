@@ -1,7 +1,7 @@
 import praw
 import creds as r
 import requests
-
+import os
 
 class REDDIT():
     """
@@ -48,6 +48,7 @@ class REDDIT():
     def download_images(self, sub, number=1):
         urls = self.get_images(sub, number)
         extension = '0'
+        image_files = []
         for url in urls:
             # Filter image file types
             if '.png' in url:
@@ -67,10 +68,21 @@ class REDDIT():
                 if image.status_code == 200:
                     with open(file_name, mode='wb') as meme_file:
                         meme_file.write(image.content)
-                        self.__add_visited__()
-                    print(f"Images found and saved as {file_name}")
+                        self.__add_visited__(url)
+                    print(f"Images found and saved as {file_name} [{len(image_files)}]")
+                    image_files.append(file_name)
 
             extension = '0'
+
+        self.image_keep(image_files)
+
+    def image_keep(self, number, image_files):
+        x = 0
+        for image in image_files:
+            number = input('Keep file [' + x + '](y/n)?')
+            if number == 'n':
+                os.remove(image)
+            
 
 
 if __name__ == '__main__':
